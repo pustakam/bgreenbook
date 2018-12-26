@@ -1,39 +1,54 @@
 #include <iostream>
 #include <cassert>
 
+#include <gtest/gtest.h>
+
 #include "slist.hpp"
+
+class SlistIntTest : public ::testing::Test
+{
+protected:
+    SlistIntTest()
+        : l0{}, l1{}, l2{}, l3{}, l4{}
+    {}
+    ~SlistIntTest() override = default;
+
+    using inode = slist_node<int>;
+
+    void SetUp() override
+    {
+        l0 = create<int>({});
+        l1 = create({1});
+        l2 = create({1, 2});
+        l3 = create({1, 2, 3});
+        l4 = create({1, 2, 3, 4});
+    }
+    void TearDown() override
+    {
+        destroy(l0);
+        destroy(l1);
+        destroy(l2);
+        destroy(l3);
+        destroy(l4);
+    }
+    
+    inode* l0;
+    inode* l1;
+    inode* l2;
+    inode* l3;
+    inode* l4;
+};
+
+TEST_F(SlistIntTest, Clone)
+{
+    auto cloned_l4 = clone(l4);
+    EXPECT_TRUE(are_equal(l4, cloned_l4));
+    EXPECT_FALSE(are_equal(l3, cloned_l4));
+}
 
 int main(int argc, char* argv[])
 {
-    static_cast<void>(argc);
-    static_cast<void>(argv);
-
-    using namespace std;
-
-    using inode = slist_node<int>;
-    inode* l0 = create<int>({});
-    cout << to_string(l0) << endl;
-    inode* l1 = create({1});
-    cout << to_string(l1) << endl;
-    inode* l2 = create({1, 2});
-    cout << to_string(l2) << endl;
-    inode* l3 = create({1, 2, 3});
-    cout << to_string(l3) << endl;
-    inode* l4 = create({1, 2, 3, 4});
-    cout << to_string(l4) << endl;
-
-    /*
-    cout << to_string(reverse(l0)) << endl;
-    cout << to_string(reverse(l1)) << endl;
-    cout << to_string(reverse(l2)) << endl;
-    cout << to_string(reverse(l3)) << endl;
-    cout << to_string(reverse(l4)) << endl;
-    */
-    auto cloned_l4 = clone(l4);
-    cout << to_string(cloned_l4) << endl;
-    assert(are_equal(l4, cloned_l4));
-    assert(!are_equal(l3, cloned_l4));
-
-    return 0;
+    ::testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
 }
 

@@ -122,6 +122,17 @@ slist_node<T>* create(std::initializer_list<T> l)
 }
 
 template <typename T>
+void destroy(slist_node<T>* head)
+{
+    while (head != nullptr)
+    {
+        auto tmp = head;
+        head = head->next;
+        delete tmp;
+    }
+}
+
+template <typename T>
 slist_node<T>* clone(slist_node<T>* head)
 {
     decltype(head) h{};

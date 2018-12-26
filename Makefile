@@ -4,14 +4,16 @@ TARGET_EXEC ?= a.out
 
 BUILD_DIR ?= ./build
 SRC_DIRS ?= ./src
-INC_DIRS ?= ./include
+#INC_DIRS ?= ./include
+INC_DIRS ?= 
 
 SRCS := $(shell find $(SRC_DIRS) -name *.cpp)
 OBJS := $(SRCS:%=$(BUILD_DIR)/%.o)
 DEPS := $(OBJS:.o=.d)
 
 CXX := g++
-CXXFLAGS := -Wall -Wextra -Wpedantic -g
+CXXFLAGS := -std=c++14 -Wall -Wextra -Wpedantic -g $(shell pkg-config --cflags gtest)
+LDFLAGS := $(shell pkg-config --libs gtest)
 
 INC_FLAGS := $(addprefix -I,$(INC_DIRS))
 CPPFLAGS ?= $(INC_FLAGS) -MMD -MP
