@@ -8,6 +8,7 @@ SRC_DIRS ?= ./src
 INC_DIRS ?= 
 
 SRCS := $(shell find $(SRC_DIRS) -name *.cpp)
+#$(info SRCS = $(SRCS))
 OBJS := $(SRCS:%=$(BUILD_DIR)/%.o)
 DEPS := $(OBJS:.o=.d)
 
