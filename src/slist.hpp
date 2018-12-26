@@ -1,10 +1,9 @@
+#ifndef __SLIST_H__
+#define __SLIST_H__
+
 #include <utility>
 #include <initializer_list>
 #include <sstream>
-#include <iostream>
-#include <cassert>
-
-using namespace std;
 
 template <typename T>
 struct slist_node
@@ -24,13 +23,13 @@ std::pair<bool, slist_node<T>*>
 remove(slist_node<T>* head, slist_node<T>* target)
 {
     if (head == nullptr || target == nullptr)
-        return make_pair(false, head);
+        return std::make_pair(false, head);
 
     if (head == target)
     {
         head = head->next;
         delete target;
-        return make_ptr(true, head);
+        return std::make_pair(true, head);
     }
 
     auto before = head;
@@ -39,11 +38,11 @@ remove(slist_node<T>* head, slist_node<T>* target)
         before = before->next;
     }
     if (before == nullptr)
-        return make_pair(false, head);
+        return std::make_pair(false, head);
 
     before->next = target->next;
     delete target;
-    return make_pair(true, head);
+    return std::make_pair(true, head);
 }
 
 template <typename T>
@@ -113,7 +112,7 @@ slist_node<T>* reverse(slist_node<T>* head)
 }
 
 template <typename T>
-slist_node<T>* create(initializer_list<T> l)
+slist_node<T>* create(std::initializer_list<T> l)
 {
     slist_node<T>* head{};
     for (const auto& data : l)
@@ -137,9 +136,9 @@ slist_node<T>* clone(slist_node<T>* head)
 }
 
 template <typename T>
-string to_string(slist_node<T>* head)
+std::string to_string(slist_node<T>* head)
 {
-    ostringstream ss;
+    std::ostringstream ss;
     ss << "head->";
     auto node = head;
     while (node)
@@ -164,32 +163,5 @@ bool are_equal(slist_node<T>* head1, slist_node<T>* head2)
     return node1 == nullptr && node2 == nullptr;
 }
 
-int main(int argc, char* argv[])
-{
-    using inode = slist_node<int>;
-    inode* l0 = create<int>({});
-    cout << to_string(l0) << endl;
-    inode* l1 = create({1});
-    cout << to_string(l1) << endl;
-    inode* l2 = create({1, 2});
-    cout << to_string(l2) << endl;
-    inode* l3 = create({1, 2, 3});
-    cout << to_string(l3) << endl;
-    inode* l4 = create({1, 2, 3, 4});
-    cout << to_string(l4) << endl;
-
-    /*
-    cout << to_string(reverse(l0)) << endl;
-    cout << to_string(reverse(l1)) << endl;
-    cout << to_string(reverse(l2)) << endl;
-    cout << to_string(reverse(l3)) << endl;
-    cout << to_string(reverse(l4)) << endl;
-    */
-    auto cloned_l4 = clone(l4);
-    cout << to_string(cloned_l4) << endl;
-    assert(are_equal(l4, cloned_l4));
-    assert(!are_equal(l3, cloned_l4));
-
-    return 0;
-}
+#endif // __SLIST_H__
 
