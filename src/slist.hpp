@@ -13,14 +13,14 @@ struct slist_node
 };
 
 template <typename T>
-slist_node<T>* insert(slist_node<T>* head, T data)
+slist_node<T>* slist_insert(slist_node<T>* head, T data)
 {
     return new slist_node<T>{data, head};
 }
 
 template <typename T>
 std::pair<bool, slist_node<T>*>
-remove(slist_node<T>* head, slist_node<T>* target)
+slist_remove(slist_node<T>* head, slist_node<T>* target)
 {
     if (head == nullptr || target == nullptr)
         return std::make_pair(false, head);
@@ -46,7 +46,7 @@ remove(slist_node<T>* head, slist_node<T>* target)
 }
 
 template <typename T>
-slist_node<T>* find(slist_node<T>* head, T data)
+slist_node<T>* slist_find(slist_node<T>* head, T data)
 {
     auto node = head;
     while (node && node->data != data)
@@ -57,7 +57,7 @@ slist_node<T>* find(slist_node<T>* head, T data)
 }
 
 template <typename T>
-slist_node<T>* insert_sorted(slist_node<T>* head, T data)
+slist_node<T>* slist_insert_sorted(slist_node<T>* head, T data)
 {
     if (head == nullptr)
         return new slist_node<T>{data, nullptr};
@@ -79,7 +79,7 @@ slist_node<T>* insert_sorted(slist_node<T>* head, T data)
 }
 
 template <typename T>
-slist_node<T>* tail(slist_node<T>* head)
+slist_node<T>* slist_tail(slist_node<T>* head)
 {
     if (head == nullptr)
         return nullptr;
@@ -92,7 +92,7 @@ slist_node<T>* tail(slist_node<T>* head)
 }
 
 template <typename T>
-slist_node<T>* reverse(slist_node<T>* head)
+slist_node<T>* slist_reverse(slist_node<T>* head)
 {
     if (head == nullptr || head->next == nullptr)
         return head;
@@ -112,17 +112,17 @@ slist_node<T>* reverse(slist_node<T>* head)
 }
 
 template <typename T>
-slist_node<T>* create(std::initializer_list<T> l)
+slist_node<T>* slist_create(std::initializer_list<T> l)
 {
     slist_node<T>* head{};
     for (const auto& data : l)
-        head = insert(head, data);
+        head = slist_insert(head, data);
 
     return head;
 }
 
 template <typename T>
-void destroy(slist_node<T>* head)
+void slist_destroy(slist_node<T>* head)
 {
     while (head != nullptr)
     {
@@ -133,21 +133,21 @@ void destroy(slist_node<T>* head)
 }
 
 template <typename T>
-slist_node<T>* clone(slist_node<T>* head)
+slist_node<T>* slist_clone(slist_node<T>* head)
 {
     decltype(head) h{};
     auto current = head; 
     while (current != nullptr)
     {
-        h = insert(h, current->data);
+        h = slist_insert(h, current->data);
         current = current->next;
     }
 
-    return reverse(h);
+    return slist_reverse(h);
 }
 
 template <typename T>
-std::string to_string(slist_node<T>* head)
+std::string slist_to_string(slist_node<T>* head)
 {
     std::ostringstream ss;
     ss << "head->";
@@ -161,7 +161,7 @@ std::string to_string(slist_node<T>* head)
 }
 
 template <typename T>
-bool are_equal(slist_node<T>* head1, slist_node<T>* head2)
+bool slist_equal(slist_node<T>* head1, slist_node<T>* head2)
 {
     auto node1 = head1;
     auto node2 = head2;
