@@ -4,27 +4,36 @@ TARGET_EXEC ?= a.out
 
 BUILD_DIR ?= ./build
 SRC_DIRS ?= ./src
-#INC_DIRS ?= ./include
-INC_DIRS ?= 
+
+GTEST_DIR := ./extern/googletest/googletest
+GTEST_INC_DIR := $(GTEST_DIR)/include
+GTEST_SRC_DIR := $(GTEST_DIR)/src
+
+INC_DIRS ?= $(GTEST_INC_DIR)
 
 SRCS := $(shell find $(SRC_DIRS) -name *.cpp)
 #$(info SRCS = $(SRCS))
 OBJS := $(SRCS:%=$(BUILD_DIR)/%.o)
 DEPS := $(OBJS:.o=.d)
 
-CXX := g++
-CXXFLAGS := -std=c++14 -Wall -Wextra -Wpedantic -g $(shell pkg-config --cflags gtest)
-LDFLAGS := $(shell pkg-config --libs gtest)
+CXX := clang++
+CXXFLAGS := -std=c++14 -Wall -Wextra -Wpedantic -g -pthread
+LDFLAGS := -pthread
 
 INC_FLAGS := $(addprefix -I,$(INC_DIRS))
 CPPFLAGS ?= $(INC_FLAGS) -MMD -MP
 
-$(BUILD_DIR)/$(TARGET_EXEC): $(OBJS)
-	$(CXX) $(OBJS) -o $@ $(LDFLAGS)
+$(BUILD_DIR)/$(TARGET_EXEC): $(BUILD_DIR)/libgtest.a $(OBJS)
+	$(CXX) $(OBJS) $(BUILD_DIR)/libgtest.a -o $@ $(LDFLAGS)
 
-$(BUILD_DIR)/%.cpp.o: %.cpp
+$(BUILD_DIR)/%.cpp.o: %.cpp 
 	$(MKDIR_P) $(dir $@)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
+
+$(BUILD_DIR)/libgtest.a: $(GTEST_SRC_DIR)/gtest-all.cc
+	$(MKDIR_P) $(dir $@)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -I$(GTEST_DIR) -c $< -o $(BUILD_DIR)/gtest-all.o
+	ar -rv $(BUILD_DIR)/libgtest.a $(BUILD_DIR)/gtest-all.o
 
 .PHONY: clean
 
