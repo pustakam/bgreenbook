@@ -174,5 +174,82 @@ bool slist_equal(slist_node<T>* head1, slist_node<T>* head2)
     return node1 == nullptr && node2 == nullptr;
 }
 
+template <typename T>
+slist_node<T>* slist_mid_by_counting(slist_node<T>* head)
+{
+    // Count the number of nodes
+    int count = 0;
+    auto node = head;
+    while (node != nullptr)
+    {
+        ++count;
+        node = node->next;
+    }
+
+    auto mid = count/2;
+    node = head;
+    while (mid)
+    {
+        node = node->next;
+        --mid;
+    }
+    return node;
+}
+
+template <typename T>
+slist_node<T>* slist_mid(slist_node<T>* head)
+{
+    auto leading = head;
+    auto trailing = head;
+    // leading moves 2 steps for trailing 1 step
+    while (leading != nullptr)
+    {
+        leading = leading->next;
+        if (leading != nullptr)
+        {
+            leading = leading->next;
+            trailing = trailing->next;
+        }
+    }
+    return trailing;
+}
+
+template <typename T>
+slist_node<T>* slist_kth_from_end(slist_node<T>* head, std::size_t k)
+{
+    auto leading = head;
+    auto trailing = head;
+    while (k && leading != nullptr)
+    {
+        leading = leading->next;
+        --k;
+    }
+    // At this point leading is (size - k) steps away from end of list
+    // So match each step of leading with trailing until leading reaches
+    // end of list
+    while (leading != nullptr) 
+    {
+        leading = leading->next;
+        trailing = trailing->next;
+    }
+    return trailing;
+}
+
+template <typename T>
+slist_node<T>* slist_merge(slist_node<T>* head1, slist_node<T>* head2)
+{
+    if (head1 == nullptr || head2 == nullptr)
+    {
+        return head1 ? head1 : head2;
+    }
+
+    auto node = head1;
+    while (node->next != nullptr)
+        node = node->next;
+
+    node->next = head2;
+    return head1;
+}
+
 #endif // __SLIST_H__
 

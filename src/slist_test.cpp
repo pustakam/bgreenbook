@@ -19,6 +19,7 @@ protected:
         l2 = slist_create({1, 2});
         l3 = slist_create({1, 2, 3});
         l4 = slist_create({1, 2, 3, 4});
+        l5 = slist_create({1, 2, 3, 4, 5});
     }
     void TearDown() override
     {
@@ -27,6 +28,7 @@ protected:
         slist_destroy(l2);
         slist_destroy(l3);
         slist_destroy(l4);
+        slist_destroy(l5);
     }
     
     inode* l0;
@@ -34,6 +36,7 @@ protected:
     inode* l2;
     inode* l3;
     inode* l4;
+    inode* l5;
 };
 
 TEST_F(SlistIntTest, Find)
@@ -102,6 +105,70 @@ TEST_F(SlistIntTest, Remove)
     ASSERT_TRUE(p.first);
     cloned_l4 = p.second;
     ASSERT_TRUE(slist_to_string(cloned_l4) == "head->");
+}
+
+TEST_F(SlistIntTest, MidCounting)
+{
+    ASSERT_TRUE(slist_mid_by_counting(l0) == nullptr);
+    ASSERT_TRUE(slist_mid_by_counting(l1)->data == 1);
+    ASSERT_TRUE(slist_mid_by_counting(l2)->data == 1);
+    ASSERT_TRUE(slist_mid_by_counting(l3)->data == 2);
+    ASSERT_TRUE(slist_mid_by_counting(l4)->data == 2);
+    ASSERT_TRUE(slist_mid_by_counting(l5)->data == 3);
+}
+
+TEST_F(SlistIntTest, Mid)
+{
+    ASSERT_TRUE(slist_mid(l0) == nullptr);
+    ASSERT_TRUE(slist_mid(l1)->data == 1);
+    ASSERT_TRUE(slist_mid(l2)->data == 1);
+    ASSERT_TRUE(slist_mid(l3)->data == 2);
+    ASSERT_TRUE(slist_mid(l4)->data == 2);
+    ASSERT_TRUE(slist_mid(l5)->data == 3);
+}
+
+TEST_F(SlistIntTest, KthFromEnd)
+{
+    ASSERT_TRUE(slist_kth_from_end(l5, 0) == nullptr);
+    ASSERT_TRUE(slist_kth_from_end(l5, 1)->data == 1);
+    ASSERT_TRUE(slist_kth_from_end(l5, 2)->data == 2);
+    ASSERT_TRUE(slist_kth_from_end(l5, 3)->data == 3);
+    ASSERT_TRUE(slist_kth_from_end(l5, 4)->data == 4);
+    ASSERT_TRUE(slist_kth_from_end(l5, 5)->data == 5);
+    ASSERT_TRUE(slist_kth_from_end(l5, 6)->data == 5);
+
+    ASSERT_TRUE(slist_kth_from_end(l4, 0) == nullptr);
+    ASSERT_TRUE(slist_kth_from_end(l4, 1)->data == 1);
+    ASSERT_TRUE(slist_kth_from_end(l4, 2)->data == 2);
+    ASSERT_TRUE(slist_kth_from_end(l4, 3)->data == 3);
+    ASSERT_TRUE(slist_kth_from_end(l4, 4)->data == 4);
+    ASSERT_TRUE(slist_kth_from_end(l4, 5)->data == 4);
+
+    ASSERT_TRUE(slist_kth_from_end(l2, 0) == nullptr);
+    ASSERT_TRUE(slist_kth_from_end(l2, 1)->data == 1);
+    ASSERT_TRUE(slist_kth_from_end(l2, 2)->data == 2);
+    ASSERT_TRUE(slist_kth_from_end(l2, 3)->data == 2);
+
+    ASSERT_TRUE(slist_kth_from_end(l1, 0) == nullptr);
+    ASSERT_TRUE(slist_kth_from_end(l1, 1)->data == 1);
+    ASSERT_TRUE(slist_kth_from_end(l1, 2)->data == 1);
+
+    ASSERT_TRUE(slist_kth_from_end(l0, 0) == nullptr);
+    ASSERT_TRUE(slist_kth_from_end(l0, 1) == nullptr);
+}
+
+TEST_F(SlistIntTest, Merge)
+{
+    auto c_l0 = slist_clone(l0);
+    auto c_l1 = slist_clone(l1);
+    auto c_l2 = slist_clone(l2);
+    auto c_l3 = slist_clone(l3);
+    auto merged_c_l0_c_l3 = slist_merge(c_l0, c_l3);
+    auto merged_c_l1_c_l2 = slist_merge(c_l1, c_l2);
+    ASSERT_TRUE(merged_c_l0_c_l3 == c_l3);
+    ASSERT_TRUE(slist_to_string(merged_c_l0_c_l3) == "head->3->2->1->");
+    ASSERT_TRUE(merged_c_l1_c_l2 == c_l1);
+    ASSERT_TRUE(slist_to_string(merged_c_l1_c_l2) == "head->1->2->1->");
 }
 
 
