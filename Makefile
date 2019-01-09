@@ -17,8 +17,9 @@ OBJS := $(SRCS:%=$(BUILD_DIR)/%.o)
 DEPS := $(OBJS:.o=.d)
 
 CXX := clang++
-CXXFLAGS := -std=c++14 -Wall -Wextra -Wpedantic -g -pthread
-LDFLAGS := -pthread
+#CXX := g++
+CXXFLAGS := -std=c++14 -Wall -Wextra -Wpedantic -g -O1 -fsanitize=address -fno-omit-frame-pointer -pthread
+LDFLAGS := -g -O1 -fsanitize=address -pthread
 
 INC_FLAGS := $(addprefix -I,$(INC_DIRS))
 CPPFLAGS ?= $(INC_FLAGS) -MMD -MP

@@ -68,6 +68,8 @@ TEST_F(SlistIntTest, InsertSorted)
     // multiple
     sl = slist_insert_sorted(sl, 9); 
     ASSERT_TRUE(sl && slist_to_string(sl) == "head->-9->-6->0->1->2->3->7->9->9->");
+
+    slist_destroy(sl);
 }
 
 TEST_F(SlistIntTest, Clone)
@@ -75,6 +77,8 @@ TEST_F(SlistIntTest, Clone)
     auto cloned_l4 = slist_clone(l4);
     ASSERT_TRUE(slist_equal(l4, cloned_l4));
     ASSERT_FALSE(slist_equal(l3, cloned_l4));
+
+    slist_destroy(cloned_l4);
 }
 
 TEST_F(SlistIntTest, Remove)
@@ -165,10 +169,36 @@ TEST_F(SlistIntTest, Merge)
     auto c_l3 = slist_clone(l3);
     auto merged_c_l0_c_l3 = slist_merge(c_l0, c_l3);
     auto merged_c_l1_c_l2 = slist_merge(c_l1, c_l2);
+
     ASSERT_TRUE(merged_c_l0_c_l3 == c_l3);
     ASSERT_TRUE(slist_to_string(merged_c_l0_c_l3) == "head->3->2->1->");
     ASSERT_TRUE(merged_c_l1_c_l2 == c_l1);
     ASSERT_TRUE(slist_to_string(merged_c_l1_c_l2) == "head->1->2->1->");
+
+    slist_destroy(merged_c_l0_c_l3);
+    slist_destroy(merged_c_l1_c_l2);
 }
 
+TEST_F(SlistIntTest, Palindrome)
+{
+    ASSERT_TRUE(slist_is_palindrome(l0));
+    ASSERT_TRUE(slist_is_palindrome(l1));
+    ASSERT_FALSE(slist_is_palindrome(l2));
+    ASSERT_FALSE(slist_is_palindrome(l3));
+    ASSERT_FALSE(slist_is_palindrome(l4));
+
+    auto p1 = slist_create({1, 1});
+    ASSERT_TRUE(slist_is_palindrome(p1));
+    auto p2 = slist_create({1, 2, 1});
+    ASSERT_TRUE(slist_is_palindrome(p2));
+    auto p3 = slist_create({1, 2, 2, 1});
+    ASSERT_TRUE(slist_is_palindrome(p3));
+    auto np1 = slist_create({1, 2, 3, 1});
+    ASSERT_FALSE(slist_is_palindrome(np1));
+
+    slist_destroy(p1);
+    slist_destroy(p2);
+    slist_destroy(p3);
+    slist_destroy(np1);
+}
 

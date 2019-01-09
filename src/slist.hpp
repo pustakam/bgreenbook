@@ -4,6 +4,7 @@
 #include <utility>
 #include <initializer_list>
 #include <sstream>
+#include <stack>
 
 template <typename T>
 struct slist_node
@@ -251,5 +252,26 @@ slist_node<T>* slist_merge(slist_node<T>* head1, slist_node<T>* head2)
     return head1;
 }
 
-#endif // __SLIST_H__
+template <typename T>
+bool slist_is_palindrome(slist_node<T>* head)
+{
+    std::stack<slist_node<T>*> s;
+    auto node = head;
+    while (node != nullptr)
+    {
+        s.push(node);
+        node = node->next;
+    }
 
+    node = head;
+    while (node != nullptr)
+    {
+        if (node->data != s.top()->data)
+            return false;
+        s.pop();
+        node = node->next;
+    }
+    return true;
+}
+
+#endif // __SLIST_H__

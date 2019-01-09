@@ -66,6 +66,12 @@ TEST_F(clistIntTest, Clone)
     ASSERT_TRUE(clist_to_string(c_l1) == "head->1->head");
     auto c_l0 = clist_clone(l0);
     ASSERT_TRUE(clist_to_string(c_l0) == "head->");
+
+    clist_destroy(c_l4);
+    clist_destroy(c_l3);
+    clist_destroy(c_l2);
+    clist_destroy(c_l1);
+    clist_destroy(c_l0);
 }
 
 TEST_F(clistIntTest, Remove)
