@@ -62,6 +62,124 @@ void bstree_destroy(bstree_node<T>* root)
 }
 
 template <typename T>
+void bstree_preorder(bstree_node<T>* root, std::function<void (bstree_node<T>*)> visit)
+{
+    if (nullptr == root)
+        return;
+
+    visit(root);
+    bstree_preorder(root->left, visit);
+    bstree_preorder(root->right, visit);
+}
+
+template <typename T>
+bstree_node<T>* bstree_clone(bstree_node<T>* root)
+{
+    bstree_node<T>* c_root{};
+    if (nullptr == root)
+        return c_root;;
+
+    std::function<void (bstree_node<T>*)> insert_node_c_root =
+        [&c_root] (bstree_node<T>* node) -> void
+        {
+            c_root = bstree_insert(c_root, node->key);
+        };
+
+    bstree_preorder(root, insert_node_c_root); 
+    return c_root;
+}
+
+template <typename T>
+bstree_node<T>* bstree_find(bstree_node<T>* root, T key)
+{
+    if (nullptr == root || key == root->key)
+        return root;
+
+    return (key < root->key) ? bstree_find(root->left, key) : bstree_find(root->right, key);
+}
+
+template <typename T>
+bstree_node<T>* bstree_find_parent(bstree_node<T>* root, bstree_node<T>* target)
+{
+    if (target == root || nullptr == root || nullptr == target)
+        return nullptr;
+
+    auto node = root;
+    while (node->left != target && node->right != target)
+    {
+        if (target->key < node->key)
+            node = node->left;
+        else
+            node = node->right;
+    }
+    return node;
+}
+
+// Find the next node for inorder traversal
+template <typename T>
+bstree_node<T>* bstree_find_successor(bstree_node<T>* root, bstree_node<T>* target)
+{
+    if (root == nullptr || target == nullptr || target->right == nullptr)
+        return nullptr;
+
+    auto node = target->right;
+    while (nullptr != node->left)
+    {
+        node = node->left;
+    }
+    return node;
+}
+
+// Remove target and return new root
+// Caller should update root
+template <typename T>
+bstree_node<T>* bstree_remove(bstree_node<T>* root, bstree_node<T>* target)
+{
+    if (nullptr == root || nullptr == target)
+        return root;
+
+    if (nullptr == target->left && nullptr == target->right)
+    {
+        if (target != root)
+        {
+            auto parent = bstree_find_parent(root, target);
+            if (parent->left == target)
+                parent->left = nullptr;
+            else
+                parent->right = nullptr;
+            delete target;
+        }
+        else
+        {
+            delete root;
+            root = nullptr;
+        }
+
+        return root;
+    }
+    else if (nullptr != target->left && nullptr != target->right)
+    {
+        auto successor = bstree_find_successor(root, target);
+        // successor can be a leaf
+        // or have a right subtree
+        if (successor->right != nullptr)
+        {
+            auto successor_parent = bstree_find_parent(root, successor);
+            std::swap(target->key, successor->key);
+            successor_parent->left = successor->right;
+            delete successor;
+        }
+        else
+        {
+            delete successor;
+        }
+        return root;
+    }
+
+    return root;
+}
+
+template <typename T>
 int bstree_depth(bstree_node<T>* root)
 {
     if (nullptr == root)
@@ -109,17 +227,6 @@ int bstree_depth_iter(bstree_node<T>* root)
         }
     }
     return maxdepth;
-}
-
-template <typename T>
-void bstree_preorder(bstree_node<T>* root, std::function<void (bstree_node<T>*)> visit)
-{
-    if (nullptr == root)
-        return;
-
-    visit(root);
-    bstree_preorder(root->left, visit);
-    bstree_preorder(root->right, visit);
 }
 
 template <typename T>
