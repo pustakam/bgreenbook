@@ -116,6 +116,7 @@ bstree_node<T>* bstree_find_parent(bstree_node<T>* root, bstree_node<T>* target)
 }
 
 // Find the next node for inorder traversal
+// aka minimum key in the right subtree of target
 template <typename T>
 bstree_node<T>* bstree_find_successor(bstree_node<T>* root, bstree_node<T>* target)
 {
@@ -154,8 +155,6 @@ bstree_node<T>* bstree_remove(bstree_node<T>* root, bstree_node<T>* target)
             delete root;
             root = nullptr;
         }
-
-        return root;
     }
     else if (nullptr != target->left && nullptr != target->right)
     {
@@ -164,18 +163,33 @@ bstree_node<T>* bstree_remove(bstree_node<T>* root, bstree_node<T>* target)
         // or have a right subtree
         if (successor->right != nullptr)
         {
+            // Transfer successor's right subtree to its parent (as its left subtree)
             auto successor_parent = bstree_find_parent(root, successor);
-            std::swap(target->key, successor->key);
             successor_parent->left = successor->right;
+
+            std::swap(target->key, successor->key);
             delete successor;
         }
         else
         {
             delete successor;
         }
-        return root;
+    }
+    else // target has at least 1 subtree
+    {
+        auto parent = bstree_parent(root, target); 
+        if (target->left == nullptr)
+        {
+            parent->left = target->right;
+        }
+        else
+        {
+            parent->right = target->left;
+        }
+        delete target;
     }
 
+    //TODO: Have to fix case with root
     return root;
 }
 
