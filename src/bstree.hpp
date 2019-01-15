@@ -141,6 +141,8 @@ bstree_node<T>* bstree_remove(bstree_node<T>* root, bstree_node<T>* target)
 
     if (nullptr == target->left && nullptr == target->right)
     {
+        // Target is a leaf
+
         if (target != root)
         {
             auto parent = bstree_find_parent(root, target);
@@ -148,48 +150,84 @@ bstree_node<T>* bstree_remove(bstree_node<T>* root, bstree_node<T>* target)
                 parent->left = nullptr;
             else
                 parent->right = nullptr;
-            delete target;
         }
         else
         {
-            delete root;
             root = nullptr;
         }
+
+        delete target;
     }
     else if (nullptr != target->left && nullptr != target->right)
     {
+        // Target has both left and right subtrees
+
+        // Find the successor
+        // Adjust the successors parent
+        // Swap successors value with target
+        // Delete successor
+
         auto successor = bstree_find_successor(root, target);
-        // successor can be a leaf
-        // or have a right subtree
+        auto successor_parent = bstree_find_parent(root, successor);
+
+        // The successor node can be in 2 possible forms
+        // a) Leaf
+        // b) Node with only a right subtree
+
+        // Adjust successor's parent before it is deleted
         if (successor->right != nullptr)
         {
-            // Transfer successor's right subtree to its parent (as its left subtree)
-            auto successor_parent = bstree_find_parent(root, successor);
-            successor_parent->left = successor->right;
+            // Case b above
 
-            std::swap(target->key, successor->key);
-            delete successor;
+            // Transfer successor's right subtree to its parent
+            if (successor_parent->left == successor)
+            {
+                successor_parent->left = successor->right;
+            }
+            else
+            {
+                successor_parent->right = successor->right;
+            }
         }
         else
         {
-            delete successor;
+            // Case a above
+
+            if (successor_parent->left == successor)
+                successor_parent->left = nullptr;
+            else
+                successor_parent->right = nullptr;
         }
+
+        std::swap(target->key, successor->key);
+        delete successor;
+
+        // target == root logic is not needed
+        // since we are swapping values and deleting successor, not target
     }
-    else // target has at least 1 subtree
+    else
     {
-        auto parent = bstree_parent(root, target); 
-        if (target->left == nullptr)
+        // Target has exactly one subtree (left or right but not both)
+
+        if (target != root)
         {
-            parent->left = target->right;
+            auto parent = bstree_find_parent(root, target); 
+            if (target->left == nullptr)
+                parent->left = target->right;
+            else
+                parent->right = target->left;
         }
         else
         {
-            parent->right = target->left;
+            if (target->left == nullptr)
+                root = target->right;
+            else
+                root = target->left;
         }
+
         delete target;
     }
 
-    //TODO: Have to fix case with root
     return root;
 }
 

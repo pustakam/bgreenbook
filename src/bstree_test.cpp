@@ -136,3 +136,141 @@ TEST_F(bstreeIntTest, Clone)
     bstree_destroy(c_t5);
 }
 
+TEST_F(bstreeIntTest, RemoveLeaf)
+{
+    {
+        auto c_l1 = bstree_clone(l1);
+        auto c_l1_1 = bstree_find(c_l1, 1);
+        c_l1 = bstree_remove(c_l1, c_l1_1); 
+        ASSERT_TRUE(bstree_to_string(c_l1) == "");
+        bstree_destroy(c_l1);
+    }
+    {
+        auto c_l2 = bstree_clone(l2);
+        auto c_l2_2 = bstree_find(c_l2, 2);
+        c_l2 = bstree_remove(c_l2, c_l2_2); 
+        ASSERT_TRUE(bstree_to_string(c_l2) == "1,");
+        bstree_destroy(c_l2);
+    }
+    {
+        auto c_t5 = bstree_clone(t5);
+
+        // 0 and 2 are leaves of 1
+
+        auto c_t5_0 = bstree_find(c_t5, 0);
+        c_t5 = bstree_remove(c_t5, c_t5_0); 
+        ASSERT_TRUE(bstree_to_string(c_t5) == "3,1,2,5,4,7,");
+
+        auto c_t5_2 = bstree_find(c_t5, 2);
+        c_t5 = bstree_remove(c_t5, c_t5_2);
+        ASSERT_TRUE(bstree_to_string(c_t5) == "3,1,5,4,7,");
+
+        auto c_t5_1 = bstree_find(c_t5, 1);
+        c_t5 = bstree_remove(c_t5, c_t5_1); 
+        ASSERT_TRUE(bstree_to_string(c_t5) == "3,5,4,7,");
+
+        bstree_destroy(c_t5);
+    }
+}
+
+TEST_F(bstreeIntTest, RemoveNodeWithSingleSubtree)
+{
+    {
+        // 1 is root with 2 in right subtree
+
+        auto c_l2 = bstree_clone(l2);
+        auto c_l2_1 = bstree_find(c_l2, 1);
+        c_l2 = bstree_remove(c_l2, c_l2_1); 
+        ASSERT_TRUE(bstree_to_string(c_l2) == "2,");
+        bstree_destroy(c_l2);
+    }
+    {
+        auto c_t5 = bstree_clone(t5);
+
+        // 0 and 2 are leaves of 1
+
+        auto c_t5_0 = bstree_find(c_t5, 0);
+        c_t5 = bstree_remove(c_t5, c_t5_0); 
+        ASSERT_TRUE(bstree_to_string(c_t5) == "3,1,2,5,4,7,");
+
+        // 1 has 2 in its right subtree
+        auto c_t5_1 = bstree_find(c_t5, 1);
+        c_t5 = bstree_remove(c_t5, c_t5_1); 
+        ASSERT_TRUE(bstree_to_string(c_t5) == "3,2,5,4,7,");
+
+        bstree_destroy(c_t5);
+    }
+}
+
+TEST_F(bstreeIntTest, RemoveNodeWithDoubleSubtree)
+{
+    {
+        auto c_t5 = bstree_clone(t5);
+        ASSERT_TRUE(bstree_to_string(c_t5) == "3,1,0,2,5,4,7,");
+
+        // 3 is root, 4 is a leaf successor
+
+        auto c_t5_3 = bstree_find(c_t5, 3);
+        c_t5 = bstree_remove(c_t5, c_t5_3); 
+        ASSERT_TRUE(bstree_to_string(c_t5) == "4,1,0,2,5,7,");
+
+        // 4 is root, 5 is successor with right subtree
+        auto c_t5_4 = bstree_find(c_t5, 4);
+        c_t5 = bstree_remove(c_t5, c_t5_4); 
+        ASSERT_TRUE(bstree_to_string(c_t5) == "5,1,0,2,7,");
+
+        bstree_destroy(c_t5);
+    }
+
+    // Three cases
+    // See http://www.mathcs.emory.edu/~cheung/Courses/171/Syllabus/9-BinTree/BST-delete2.html
+
+    {
+        auto tr = bstree_create({6, 2, 1, 9, 8, 15, 13, 11, 18});
+        ASSERT_TRUE(bstree_to_string(tr) == "6,2,1,9,8,15,13,11,18,"); 
+
+        auto tr_9 = bstree_find(tr, 9);
+        tr = bstree_remove(tr, tr_9);
+        ASSERT_TRUE(bstree_to_string(tr) == "6,2,1,11,8,15,13,18,"); 
+
+        ASSERT_TRUE(tr->right->key == 11);
+        auto tr_11 = bstree_find(tr, 11);
+        ASSERT_TRUE(tr_11->left->key == 8);
+        ASSERT_TRUE(tr_11->right->key == 15);
+
+        bstree_destroy(tr);
+    }
+    {
+        auto tr = bstree_create({6, 2, 1, 11, 8, 9, 10, 15});
+        ASSERT_TRUE(bstree_to_string(tr) == "6,2,1,11,8,9,10,15,"); 
+
+        auto tr_6 = bstree_find(tr, 6);
+        tr = bstree_remove(tr, tr_6);
+        ASSERT_TRUE(bstree_to_string(tr) == "8,2,1,11,9,10,15,"); 
+
+        ASSERT_TRUE(tr->key == 8);
+        ASSERT_TRUE(tr->right->key == 11);
+        auto tr_11 = bstree_find(tr, 11);
+        ASSERT_TRUE(tr_11->left->key == 9);
+        ASSERT_TRUE(tr_11->right->key == 15);
+
+        bstree_destroy(tr);
+    }
+    {
+        auto tr = bstree_create({6, 2, 1, 4, 11, 15, 17});
+        ASSERT_TRUE(bstree_to_string(tr) == "6,2,1,4,11,15,17,"); 
+
+        auto tr_6 = bstree_find(tr, 6);
+        tr = bstree_remove(tr, tr_6);
+        ASSERT_TRUE(bstree_to_string(tr) == "11,2,1,4,15,17,"); 
+
+        ASSERT_TRUE(tr->key == 11);
+        ASSERT_TRUE(tr->right->key == 15);
+        auto tr_15 = bstree_find(tr, 15);
+        ASSERT_TRUE(tr_15->left == nullptr);
+        ASSERT_TRUE(tr_15->right->key == 17);
+
+        bstree_destroy(tr);
+    }
+}
+

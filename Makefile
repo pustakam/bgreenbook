@@ -18,8 +18,8 @@ DEPS := $(OBJS:.o=.d)
 
 CXX := clang++
 #CXX := g++
-CXXFLAGS := -std=c++14 -Wall -Wextra -Wpedantic -g -O1 -fsanitize=address -fno-omit-frame-pointer -pthread
-LDFLAGS := -g -O1 -fsanitize=address -pthread
+CXXFLAGS := -std=c++14 -Wall -Wextra -Wpedantic -g -fsanitize=address -fno-omit-frame-pointer -pthread
+LDFLAGS := -g -fsanitize=address -pthread
 
 INC_FLAGS := $(addprefix -I,$(INC_DIRS))
 CPPFLAGS ?= $(INC_FLAGS) -MMD -MP
