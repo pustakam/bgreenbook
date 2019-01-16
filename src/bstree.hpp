@@ -73,6 +73,68 @@ void bstree_preorder(bstree_node<T>* root, std::function<void (bstree_node<T>*)>
 }
 
 template <typename T>
+void bstree_bfs_iter(bstree_node<T>* root, std::function<void (bstree_node<T>*)> visit)
+{
+    if (nullptr == root)
+        return;
+
+    std::queue<bstree_node<T>*> node_queue;
+
+    node_queue.push(root);
+    while(!node_queue.empty())
+    {
+        auto node = node_queue.front();
+        node_queue.pop();
+        visit(node);
+
+        if (nullptr != node->left)
+            node_queue.push(node->left);
+        if (nullptr != node->right)
+            node_queue.push(node->right);
+    }
+    return;
+}
+
+template <typename T>
+void bstree_dfs_iter(bstree_node<T>* root, std::function<void (bstree_node<T>*)> visit)
+{
+    if (nullptr == root)
+        return;
+
+    std::stack<bstree_node<T>*> node_stack;
+    std::set<bstree_node<T>*> visited;
+
+    node_stack.push(root);
+    while (!node_stack.empty())
+    {
+        auto node = node_stack.top();
+
+        // Keep pushing on the stack until a leaf node is found
+        // Only pop leaf node
+        // Keep track of previously visited nodes
+
+        if (nullptr != node->left
+                && visited.find(node->left) == visited.end())
+        {
+            node_stack.push(node->left);
+        }
+        else if (nullptr != node->right
+                && visited.find(node->right) == visited.end())
+        {
+            node_stack.push(node->right);
+        }
+        else
+        {
+            node_stack.pop();
+            visit(node);
+            visited.insert(node);
+        }
+    }
+
+    return;
+}
+
+template <typename T>
 bstree_node<T>* bstree_clone(bstree_node<T>* root)
 {
     bstree_node<T>* c_root{};
@@ -232,7 +294,39 @@ bstree_node<T>* bstree_remove(bstree_node<T>* root, bstree_node<T>* target)
 }
 
 template <typename T>
-int bstree_depth(bstree_node<T>* root)
+std::size_t bstree_size(bstree_node<T>* root)
+{
+    if (nullptr == root)
+        return 0;
+    return bstree_size(root->left) + bstree_size(root->right) + 1;
+}
+
+template <typename T>
+std::size_t bstree_size_iter(bstree_node<T>* root)
+{
+    if (nullptr == root)
+        return 0;
+    std::queue<bstree_node<T>*> node_queue;
+    node_queue.push(root);
+    std::size_t count{0};
+
+    while (!node_queue.empty())
+    {
+        auto node = node_queue.front();
+        node_queue.pop();
+
+        ++count;
+
+        if (nullptr != node->left)
+            node_queue.push(node->left);
+        if (nullptr != node->right)
+            node_queue.push(node->right);
+    }
+    return count;
+}
+
+template <typename T>
+std::size_t bstree_depth(bstree_node<T>* root)
 {
     if (nullptr == root)
         return 0;
@@ -242,7 +336,7 @@ int bstree_depth(bstree_node<T>* root)
 }
 
 template <typename T>
-int bstree_depth_iter(bstree_node<T>* root)
+std::size_t bstree_depth_iter(bstree_node<T>* root)
 {
     if (nullptr == root)
         return 0;

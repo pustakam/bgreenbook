@@ -83,6 +83,25 @@ TEST_F(bstreeIntTest, FindSuccessor)
     ASSERT_TRUE(bstree_find_successor(t6, t6_7) == t6_11);
 }
 
+TEST_F(bstreeIntTest, Size)
+{
+    ASSERT_TRUE(bstree_size(l0) == 0);
+    ASSERT_TRUE(bstree_size(l1) == 1);
+    ASSERT_TRUE(bstree_size(l2) == 2);
+    ASSERT_TRUE(bstree_size(l3) == 3);
+
+    ASSERT_TRUE(bstree_size(t5) == 7);
+}
+
+TEST_F(bstreeIntTest, SizeIter)
+{
+    ASSERT_TRUE(bstree_size_iter(l0) == 0);
+    ASSERT_TRUE(bstree_size_iter(l1) == 1);
+    ASSERT_TRUE(bstree_size_iter(l2) == 2);
+    ASSERT_TRUE(bstree_size_iter(l3) == 3);
+
+    ASSERT_TRUE(bstree_size_iter(t5) == 7);
+}
 
 TEST_F(bstreeIntTest, Depth)
 {
