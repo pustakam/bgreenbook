@@ -293,3 +293,15 @@ TEST_F(bstreeIntTest, RemoveNodeWithDoubleSubtree)
     }
 }
 
+TEST_F(bstreeIntTest, Balanced)
+{
+    ASSERT_TRUE(bstree_balanced(l0));
+    ASSERT_TRUE(bstree_balanced(l1));
+    ASSERT_TRUE(bstree_balanced(l2));
+    ASSERT_FALSE(bstree_balanced(l3));
+    ASSERT_FALSE(bstree_balanced(l4));
+
+    ASSERT_TRUE(bstree_balanced(t5));
+    ASSERT_TRUE(bstree_balanced(t6));
+}
+

@@ -1,6 +1,7 @@
 #ifndef __BSTREE_HPP__
 #define __BSTREE_HPP__
 
+#include <cstdlib>
 #include <utility>
 #include <functional>
 #include <initializer_list>
@@ -395,6 +396,22 @@ void bstree_postorder(bstree_node<T>* root, std::function<void (bstree_node<T>*)
     bstree_postorder(root->left, visit);
     bstree_postorder(root->right, visit);
     visit(root);
+}
+
+// For every node,
+//  diff between depth of left subtree
+//      and depth of right subtree is at most 1
+template <typename T>
+bool bstree_balanced(bstree_node<T>* root)
+{
+    if (nullptr == root) 
+        return true;
+
+    if (!bstree_balanced(root->left) || !bstree_balanced(root->right))
+        return false;
+
+    int depth_diff = bstree_depth(root->left) - bstree_depth(root->right); 
+    return std::abs(depth_diff) <= 1;
 }
 
 template <typename T>
