@@ -2,6 +2,8 @@
 
 #include <iostream>
 #include <vector>
+#include <algorithm>
+#include <iterator>
 
 #include "maxheap.hpp"
 
@@ -102,3 +104,52 @@ TEST_F(MaxHeapIntTest, InsertMaxRemoveMax)
     ASSERT_TRUE(a == b);
 }
 
+TEST(StreamWindowTest, All)
+{
+    {
+        StreamWindow<int, 1> w;
+        w.process(2);
+        ASSERT_TRUE(w.topk() == std::vector<int>({2}));
+        w.process(0);
+        ASSERT_TRUE(w.topk() == std::vector<int>({2}));
+        w.process(3);
+        ASSERT_TRUE(w.topk() == std::vector<int>({3}));
+    }
+
+    {
+        StreamWindow<int, 2> w;
+        w.process(10);
+        ASSERT_TRUE(w.topk() == std::vector<int>({10}));
+        w.process(1);
+        ASSERT_TRUE(w.topk() == std::vector<int>({1, 10}));
+        w.process(3);
+        ASSERT_TRUE(w.topk() == std::vector<int>({3, 10}));
+        w.process(2);
+        ASSERT_TRUE(w.topk() == std::vector<int>({3, 10}));
+        w.process(11);
+        ASSERT_TRUE(w.topk() == std::vector<int>({10, 11}));
+    }
+
+    {
+        std::vector<int> input{1, 2, 3};
+        StreamWindow<int, 3> w(input.begin(), input.end());
+        ASSERT_TRUE(w.topk() == std::vector<int>({1, 2, 3}));
+        w.process(4);
+        ASSERT_TRUE(w.topk() == std::vector<int>({2, 3, 4}));
+        w.process(1);
+        ASSERT_TRUE(w.topk() == std::vector<int>({2, 3, 4}));
+    }
+    {
+        std::vector<int> input{1, 2, 3};
+        StreamWindow<int, 4> w(input.begin(), input.end());
+        w.process(4);
+        ASSERT_TRUE(w.topk() == std::vector<int>({1, 2, 3, 4}));
+        w.process(5);
+        ASSERT_TRUE(w.topk() == std::vector<int>({2, 3, 4, 5}));
+
+        std::vector<int> another_input{5, 5, 5, 5};
+        w.process(another_input.begin(), another_input.end());
+        ASSERT_TRUE(w.topk() == std::vector<int>({5, 5, 5, 5}));
+    }
+
+}

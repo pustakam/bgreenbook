@@ -82,7 +82,6 @@ TEST_F(StackIntTest, All)
     s.push(3);
     s.push(4);
     s.pop();
-    std::cout << s.top() << std::endl;
     ASSERT_TRUE(s.top() == 3); 
     s.pop();
     ASSERT_TRUE(s.top() == 2); 
