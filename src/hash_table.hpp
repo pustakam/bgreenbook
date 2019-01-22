@@ -58,7 +58,7 @@ public:
         
         // Move the item to the front of the list
         list_.splice(list_.begin(), list_, it->second);
-        // it iterator stays valid
+        // it->second (list iterator) stays valid
         return *(it->second);
     }
 
