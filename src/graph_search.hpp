@@ -5,6 +5,7 @@
 #include <vector>
 #include <set>
 #include <queue>
+#include <stack>
 
 template <typename T>
 struct vertex
@@ -37,6 +38,31 @@ void bfs(vertex<T>* origin, visitor<vertex<T>> visit)
                 visit(v);
                 visited.insert(v);
                 q.push(v);
+            }
+        }
+    }
+}
+
+template <typename T>
+void dfs(vertex<T>* origin, visitor<vertex<T>> visit)
+{
+    std::stack<const vertex<T>*> s;
+    std::set<const vertex<T>*> visited;
+
+    s.push(origin);
+    while (!s.empty())
+    {
+        auto u = s.top();
+        s.pop();
+        if (visited.find(u) == visited.end())
+        {
+            visit(u);
+            for (auto v : u->neighbors)
+            {
+                if (visited.find(v) == visited.end())
+                {
+                    s.push(v);
+                }
             }
         }
     }

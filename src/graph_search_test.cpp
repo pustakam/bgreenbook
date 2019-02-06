@@ -8,8 +8,26 @@
 
 #include "graph_search.hpp"
 
-TEST(GraphSearch, bfs)
+class GraphIntTest : public ::testing::Test
 {
+protected:
+    GraphIntTest()
+    {}
+    ~GraphIntTest() override = default;
 
+    void SetUp() override
+    {
+    }
+    void TearDown() override
+    {
+    }
+};
+
+TEST_F(GraphIntTest, bfs)
+{
+}
+
+TEST_F(GraphIntTest, dfs)
+{
 }
 
