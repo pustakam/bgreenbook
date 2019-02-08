@@ -6,6 +6,7 @@
 #include <set>
 #include <queue>
 #include <stack>
+#include <initializer_list>
 
 template <typename T>
 struct vertex
@@ -13,6 +14,12 @@ struct vertex
     T value;
     std::vector<vertex<T>*> neighbors;
 };
+
+template <typename T>
+void set_neighbors(vertex<T>* vt, std::initializer_list<vertex<T>*> l)
+{
+    vt->neighbors.insert(vt->neighbors.end(), l);
+}
 
 template <typename V>
 using visitor = std::function<void (const V*)>;
