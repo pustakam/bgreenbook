@@ -15,7 +15,7 @@ struct vertex
 };
 
 template <typename V>
-using visitor = std::function<void (V*)>;
+using visitor = std::function<void (const V*)>;
 
 template <typename T>
 void bfs(vertex<T>* origin, visitor<vertex<T>> visit)
@@ -57,6 +57,7 @@ void dfs(vertex<T>* origin, visitor<vertex<T>> visit)
         if (visited.find(u) == visited.end())
         {
             visit(u);
+            visited.insert(u);
             for (auto v : u->neighbors)
             {
                 if (visited.find(v) == visited.end())
