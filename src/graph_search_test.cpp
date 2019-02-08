@@ -29,13 +29,6 @@ protected:
         for (int i=0; i<10; ++i)
             v.push_back(new intvertex{i, {}});
 
-        /*
-        auto add_neighbors = [](intvertex* vt, std::initializer_list<intvertex*> l) -> void
-        {
-            vt->neighbors.insert(vt->neighbors.end(), l);
-        };
-        */
-
         // See the German cities graph at https://en.wikipedia.org/wiki/Breadth-first_search
         set_neighbors(v[0], {v[1], v[2], v[3]});
         set_neighbors(v[1], {v[0], v[4]});
